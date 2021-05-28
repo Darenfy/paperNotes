@@ -1,0 +1,51 @@
+- interface/interface.h
+  - generateIfacex()
+- executor.h(Transaction &tx)
+  - nsm -> getService -> transact(code, data, reply, flags)
+- generator.h
+  - generateTx()
+- test.h
+  - 测试 fuzzer
+- types/types.h
+  - 定义各种类型的初始化及生成
+- utils/java_vm.h
+  - java 虚拟机环境
+- utils/log.h
+  - 日志配置
+
+- main.cpp
+  - 初始化
+- parcel_reader.cpp
+  - 读取变量名和变量类型
+- parcel_writer.cpp
+  - 生成变量名和变量类型
+- parcel_reader_writer.cpp
+  - 初始化及判断何时读取或生成怎样的包
+- dependency_solver
+  - 解除 结构变量依赖 以及 事务代码依赖
+- constraint_checker.cpp
+  - 约束管理
+- service.cpp
+  - getService -> 顶层 多层接口
+  - 手动生成接口
+  - 获取接口名
+- transaction.cpp
+  - 事务结构
+
+main.cpp
+- tx = gen.generateTx()
+  - 
+- executor.run(tx)
+  - nsm.getService(tx)
+    - 接口 Binder 是否存活
+    - 未存活
+      - 是否是顶层接口
+        - 顶层接口直接获取
+        - 非顶层接口
+          - DependencySolver solver (Parcel *targetParcel,DependencyType dependencyType,const Json::Value &dependencySet)
+          - solver.solve()
+            - 事务依赖
+            - 结构依赖
+              - 循环调用执行 transact ？ 疯狂套娃
+          - solver.binder
+  - interface->transact(code, data, reply, flags)
